@@ -15,12 +15,11 @@ class SimpleHiveService implements ISimpleDataBaseCommonsEntity {
     await _openBox();
     print("curentKeys ${box.keys}");
 
-    return await box.containsKey(key);
+    return box.containsKey(key);
   }
 
   clearMemory() async {
     await _openBox();
-
     await box.clear();
   }
 
