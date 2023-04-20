@@ -1,26 +1,75 @@
 import 'package:hive/hive.dart';
 
-import '../entities/commons_data_base_entity.dart';
+class HiveCustomService<T> {
+  final String boxName;
+  late Box<T> _box;
 
-///Save object like complex types
-class CustomHiveService implements ICustomDataBaseCommonsEntity {
-  Box box = Hive.box('customBox');
+  HiveCustomService({required this.boxName});
 
-  @override
-  Future deleteMethod(key) {
-    // TODO: implement deleteMethod
-    throw UnimplementedError();
+  ///open related type of box defined by main class
+  Future<void> _init() async {
+    await Hive.openBox<T>(boxName);
+    _box = Hive.box<T>(boxName);
   }
 
-  @override
-  Future readMethod(key) {
-    // TODO: implement readMethod
-    throw UnimplementedError();
+  ///add a [adapter] type in memory
+  ///related by <T> on main class
+  Future<int> addItem(T item) async {
+    await _init();
+    return await _box.add(item);
   }
 
-  @override
-  Future writeMethod(key, value) {
-    // TODO: implement writeMethod
-    throw UnimplementedError();
+  ///override a memory item by new value
+  ///if item not current in memory could
+  ///cause a error
+  Future<void> updateItem(dynamic key, T item) async {
+    await _init();
+
+    if (key is int) {
+      await _box.putAt(key, item);
+    } else {
+      await _box.put(key, item);
+    }
   }
+
+  ///delete item by key or index
+  ///if not exists have no effect
+  Future<void> deleteItem(dynamic key) async {
+    await _init();
+
+    if (key is int) {
+      await _box.deleteAt(key);
+    } else {
+      await _box.delete(key);
+    }
+  }
+
+  ///return stored value this service only handle
+  ///[ADAPTERS] types, if not exists return null
+  Future<T?> getItem(dynamic key) async {
+    await _init();
+
+    if (key is int) {
+      return _box.getAt(key);
+    } else {
+      return _box.get(key);
+    }
+  }
+
+  ///get all [adapters] in current memory
+  Future<List<T>> getAllItems() async {
+    await _init();
+
+    return _box.values.toList();
+  }
+
+  ///clear current memory
+  Future<void> clear() async {
+    await _init();
+
+    await _box.clear();
+  }
+
+  ///length of current memory by index
+  int get itemCount => _box.length;
 }

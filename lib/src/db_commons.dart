@@ -2,13 +2,11 @@ import 'domain/service/hive_custom_service.dart';
 import 'domain/service/hive_simple_service.dart';
 
 ///responsible to store primitives types
-class MealDataBase extends SimpleHiveService {
+class MealDataBase extends HiveSimpleService {
   MealDataBase({super.boxName = 'simpleCommons'});
 }
 
 ///responsible to store complex data
-class MealDataBaseCustom extends CustomHiveService {
-  clearMemory() async {
-    await box.clear();
-  }
+class MealDataBaseCustom extends HiveCustomService {
+  MealDataBaseCustom({super.boxName = 'customCommons'});
 }

@@ -1,43 +1,55 @@
 import 'package:hive/hive.dart';
-import '../entities/commons_data_base_entity.dart';
 
 ///Save simple data like primitives types
-class SimpleHiveService implements ISimpleDataBaseCommonsEntity {
-  late Box box;
+class HiveSimpleService {
   final String boxName;
-  SimpleHiveService({required this.boxName});
+  late Box _box;
 
-  _openBox() async {
-    box = await Hive.openBox(boxName);
+  HiveSimpleService({required this.boxName});
+
+  ///open box to make possible read and update
+  _init() async {
+    _box = await Hive.openBox(boxName);
   }
 
-  containsKey(key) async {
-    await _openBox();
-    print("curentKeys ${box.keys}");
-
-    return box.containsKey(key);
+  ///return if a key already in memory
+  ///can be used to handle update or add
+  Future<bool> existKey(key) async {
+    await _init();
+    return _box.containsKey(key);
   }
 
-  clearMemory() async {
-    await _openBox();
-    await box.clear();
+  ///remove all current data
+  Future<void> clear() async {
+    await _init();
+    await _box.clear();
   }
 
-  @override
+  ///remove only a key
+  ///have no effect if this doesnt exists
   Future deleteMethod(key) async {
-    await _openBox();
-    return await box.delete(key.toString());
+    await _init();
+    return await _box.delete(key.toString());
   }
 
-  @override
-  Future readMethod(key) async {
-    await _openBox();
-    return await box.get(key.toString());
+  ///return stored value this service only handle
+  ///[PRIMITIVES] types, if not exists return null
+  Future<dynamic> readMethod(dynamic key) async {
+    await _init();
+    if (key is int) {
+      return await _box.getAt(key);
+    } else {
+      return await _box.get(key);
+    }
   }
 
-  @override
-  Future writeMethod(key, value) async {
-    await _openBox();
-    return await box.put(key.toString(), value);
+  ///override a current key
+  ///if not already exists may cause exception
+  Future<void> writeMethod(dynamic key, dynamic value) async {
+    await _init();
+    if (key is int) {
+      await _box.putAt(key, value);
+    }
+    await _box.put(key, value);
   }
 }
