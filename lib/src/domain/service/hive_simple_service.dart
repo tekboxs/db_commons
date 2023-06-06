@@ -52,4 +52,14 @@ class HiveSimpleService {
     }
     await _box.put(key, value);
   }
+
+  Future<int> get memoryLength async {
+    await _init();
+    return _box.length;
+  }
+
+  Future<List<dynamic>> get getAllItens async {
+    await _init();
+    return [for (var key in _box.keys) await readMethod(key)];
+  }
 }
