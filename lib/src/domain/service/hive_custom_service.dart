@@ -28,7 +28,7 @@ class HiveCustomService<T> {
     if (key is int) {
       await _box.putAt(key, item);
     } else {
-      await _box.put(key, item);
+      await _box.put(key.toString(), item);
     }
   }
 
@@ -40,7 +40,7 @@ class HiveCustomService<T> {
     if (key is int) {
       await _box.deleteAt(key);
     } else {
-      await _box.delete(key);
+      await _box.delete(key.toString());
     }
   }
 
@@ -52,7 +52,7 @@ class HiveCustomService<T> {
     if (key is int) {
       return _box.getAt(key);
     } else {
-      return _box.get(key);
+      return _box.get(key.toString());
     }
   }
 

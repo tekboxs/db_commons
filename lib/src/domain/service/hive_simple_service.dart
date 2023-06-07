@@ -14,9 +14,9 @@ class HiveSimpleService {
 
   ///return if a key already in memory
   ///can be used to handle update or add
-  Future<bool> existKey(key) async {
+  Future<bool> existKey(dynamic key) async {
     await _init();
-    return _box.containsKey(key);
+    return _box.containsKey(key.toString());
   }
 
   ///remove all current data
@@ -39,7 +39,7 @@ class HiveSimpleService {
     if (key is int) {
       return await _box.getAt(key);
     } else {
-      return await _box.get(key);
+      return await _box.get(key.toString());
     }
   }
 
@@ -50,7 +50,7 @@ class HiveSimpleService {
     if (key is int) {
       await _box.putAt(key, value);
     }
-    await _box.put(key, value);
+    await _box.put(key.toString(), value);
   }
 
   Future<int> get memoryLength async {
