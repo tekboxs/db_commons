@@ -8,7 +8,10 @@ class HiveCustomService<T> {
 
   ///open related type of box defined by main class
   Future<void> _init() async {
-    await Hive.openBox<T>(boxName);
+    if (!Hive.isBoxOpen(boxName)) {
+      await Hive.openBox<T>(boxName);
+    }
+
     _box = Hive.box<T>(boxName);
   }
 

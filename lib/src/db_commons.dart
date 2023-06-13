@@ -7,6 +7,6 @@ class MealDataBase extends HiveSimpleService {
 }
 
 ///responsible to store complex data
-class MealDataBaseCustom extends HiveCustomService {
+class MealDataBaseCustom<T> extends HiveCustomService {
   MealDataBaseCustom({super.boxName = 'customCommons'});
 }

@@ -32,7 +32,7 @@ class Atleta {
 }
 
 void main() async {
-  await WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   Directory dir = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(dir.path);
@@ -63,7 +63,7 @@ class HomeGay extends StatelessWidget {
         ElevatedButton(
             onPressed: () async {
               HiveCustomService service =
-                  await HiveCustomService<Atleta>(boxName: 'custom');
+                  HiveCustomService<Atleta>(boxName: 'custom');
               final indexResult = await service.addItem(
                 Atleta(name: 'name123', email: 'email123'),
               );
