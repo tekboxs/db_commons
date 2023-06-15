@@ -2,36 +2,34 @@ import 'package:hive/hive.dart';
 
 class HiveCustomService<T> {
   final String boxName;
-  late Box<T> _box;
+  Box<T>? box;
 
   HiveCustomService({required this.boxName});
 
   ///open related type of box defined by main class
   Future<void> _init() async {
-    if (!Hive.isBoxOpen(boxName)) {
-      await Hive.openBox<T>(boxName);
+    if (box == null || !box!.isOpen) {
+      box = await Hive.openBox<T>(boxName);
     }
-
-    _box = Hive.box<T>(boxName);
   }
 
   ///add a [adapter] type in memory
   ///related by <T> on main class
   Future<int> addItem(T item) async {
     await _init();
-    return await _box.add(item);
+    return await box!.add(item);
   }
 
   ///override a memory item by new value
   ///if item not current in memory could
   ///cause a error
   Future<void> updateItem(dynamic key, T item) async {
-    await _init();
+    // await _init();
 
     if (key is int) {
-      await _box.putAt(key, item);
+      await box!.putAt(key, item);
     } else {
-      await _box.put(key.toString(), item);
+      await box!.put(key.toString(), item);
     }
   }
 
@@ -41,9 +39,9 @@ class HiveCustomService<T> {
     await _init();
 
     if (key is int) {
-      await _box.deleteAt(key);
+      await box!.deleteAt(key);
     } else {
-      await _box.delete(key.toString());
+      await box!.delete(key.toString());
     }
   }
 
@@ -53,9 +51,9 @@ class HiveCustomService<T> {
     await _init();
 
     if (key is int) {
-      return _box.getAt(key);
+      return box!.getAt(key);
     } else {
-      return _box.get(key.toString());
+      return box!.get(key.toString());
     }
   }
 
@@ -63,16 +61,30 @@ class HiveCustomService<T> {
   Future<List<T>> getAllItems() async {
     await _init();
 
-    return _box.values.toList();
+    return box!.values.toList();
   }
 
   ///clear current memory
   Future<void> clear() async {
     await _init();
 
-    await _box.clear();
+    await box!.clear();
+  }
+
+  Future<T?> getItemMaybe(dynamic key) async {
+    await _init();
+
+    if (key is int) {
+      return box!.getAt(key);
+    } else {
+      return box!.get(key.toString());
+    }
+  }
+
+  Future<void> close() async {
+    await box?.close();
   }
 
   ///length of current memory by index
-  int get itemCount => _box.length;
+  int get itemCount => box!.length;
 }
