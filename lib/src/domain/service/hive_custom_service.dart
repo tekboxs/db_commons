@@ -24,7 +24,7 @@ class HiveCustomService<T> {
   ///if item not current in memory could
   ///cause a error
   Future<void> updateItem(dynamic key, T item) async {
-    // await _init();
+    await _init();
 
     if (key is int) {
       await box!.putAt(key, item);
@@ -75,6 +75,7 @@ class HiveCustomService<T> {
     await _init();
 
     if (key is int) {
+      
       return box!.getAt(key);
     } else {
       return box!.get(key.toString());
