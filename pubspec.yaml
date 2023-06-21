@@ -12,9 +12,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   path_provider: ^2.0.15
-  mockito: ^5.4.0
  
 dev_dependencies:
+  mockito: ^5.4.0
   build_runner: ^2.3.3
   test:
   flutter_test:
